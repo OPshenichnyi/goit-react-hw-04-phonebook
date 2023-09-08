@@ -71,6 +71,5 @@ export const App = () => {
         >
         </ContactList>
       </Wrapper>
-    
   )
 }
