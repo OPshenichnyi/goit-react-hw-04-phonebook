@@ -1,6 +1,5 @@
 import { ListItemPhone } from "./ContactList.styled"
 
-
 export const ContactList = ({phoneBook, removeContact}) => {
 
     return (

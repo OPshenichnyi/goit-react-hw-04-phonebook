@@ -5,8 +5,6 @@ import { Filter } from "./filter/Filter";
 import { Wrapper } from "./App.styled"
 
 
-
-
 export const App = () => {
 
   const [contacts, setcontacts] = useState([])
