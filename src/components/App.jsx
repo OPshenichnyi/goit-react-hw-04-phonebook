@@ -1,68 +1,76 @@
-import { Component } from "react"
+import { useEffect, useState } from "react"
 import { ContactForm } from "./contactForm/ContactForm";
 import { ContactList } from "./contactList/ContactList";
 import { Filter } from "./filter/Filter";
 import { Wrapper } from "./App.styled"
 
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
-  componentDidMount() {
+
+
+export const App = () => {
+
+  const [contacts, setcontacts] = useState([])
+  const [filter, setfilter] = useState('')
+
+  useEffect(() => {
+
     const localContact = JSON.parse(localStorage.getItem('contacts'))
     if (localContact === null) {
       return
     }
-    this.setState({ contacts: localContact})
-  }
+    setcontacts(localContact)
+  }, [])
 
-  componentDidUpdate() {
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
-  }
+  useEffect(() => {
+    if (contacts.length === 0) {
+      return
+    }
+    localStorage.setItem('contacts', JSON.stringify(contacts))
+  }, [contacts])
 
-  addConacts = (data) => {
-    const checkNameUser = this.state.contacts.some(user => user.name.toLowerCase() === data.name.toLowerCase())
+
+  const addConacts = (data) => {
+
+    const checkNameUser = contacts.some(user => user.name.toLowerCase() === data.name.toLowerCase())
     if (checkNameUser) {
       alert(`${data.name} is already in contacts`)
       return
     }
-    this.setState(prevState => ({ contacts: prevState.contacts.concat(data) }))
+    setcontacts(prevState => prevState.concat(data))
   }
 
-  removeContact = (id) => {
-    this.setState(prevState => ({ contacts: prevState.contacts.filter(user=>user.id !== id )}))
+  const removeContact = (id) => {
+    setcontacts(prevState => prevState.filter(user => user.id !== id))
   }
 
-  filterContact = (evt) => {
-    this.setState({ filter: evt })
+  const filterContact = (evt) => {
+    setfilter(evt)
+    return contacts.filter(user => user.name.toLowerCase().includes(filter.toLowerCase()))
   }
 
-  filtredContactArr = () => {
-    return this.state.contacts.filter(user => user.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+  const filtredContactArr = () => {
+    return contacts.filter(user => user.name.toLowerCase().includes(filter.toLowerCase()))
   }
 
-  render() {
-    return (
+  return (
       <Wrapper>
         <h1>Phonebook</h1>
-        <ContactForm 
-          addConacts={this.addConacts}
+        <ContactForm
+          addConacts={addConacts}
         >
         </ContactForm>
         <h2>Contacts</h2>
         <Filter
-          filterContact={this.filterContact}
+          filterContact={filterContact}
         >
         </Filter>
         <ContactList
-          phoneBook={this.filtredContactArr()}
-          removeContact={this.removeContact}
-          filter={this.state.filter}
+          phoneBook={filtredContactArr()}
+          removeContact={removeContact}
+          filter={filter}
         >
-        </ContactList>     
+        </ContactList>
       </Wrapper>
-    );
-  }
-};
+    
+  )
+}
